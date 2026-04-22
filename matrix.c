@@ -14,13 +14,19 @@ Matrix *init_matrix(int row, int col);
 void print_matrix(const Matrix *matrix);
 Matrix *populate_matrix(int row, int col);
 void free_matrix(Matrix *matrix);
+Matrix *add_matrix(Matrix *matrix1, Matrix *matrix2);
 
 int main(int argc, char *argv[]) {
   int co, elem, fil;
   Matrix *matrix;
   Matrix *matrix2;
-  matrix2 = populate_matrix(atoi(argv[1]), atoi(argv[2]));
+  Matrix *matrix3;
+  matrix = populate_matrix(atoi(argv[1]), atoi(argv[2]));
+  print_matrix(matrix);
+  matrix2 = populate_matrix(atoi(argv[1]), 3);
   print_matrix(matrix2);
+  matrix3 = add_matrix(matrix, matrix2);
+  print_matrix(matrix3);
 }
 Matrix *init_matrix(int row, int col) {
   Matrix *matrix;
@@ -80,4 +86,20 @@ void free_matrix(Matrix *matrix) {
     }
     free((void *)matrix);
   }
+}
+
+Matrix *add_matrix(Matrix *matrix1, Matrix *matrix2) {
+  Matrix *matrix3;
+  matrix3 = init_matrix(matrix1->row, matrix1->col);
+  if (matrix1->row == matrix2->col && matrix1->col == matrix2->col) {
+    for (int i = 0; i < matrix1->row; i++) {
+      for (int j = 0; j < matrix1->col; j++) {
+        matrix3->data[i][j] = matrix1->data[i][j] + matrix2->data[i][j];
+      }
+    }
+  } else {
+    printf("sos un wachin como vas a sumar matrices de diferente dimension. "
+           "kabum\n");
+  }
+  return matrix3;
 }
