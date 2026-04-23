@@ -7,9 +7,12 @@ typedef struct Matrix{
 	int row;
 	float **data;
 }Matrix;
+
+Matrix *copy_matrix(const Matrix *matrix1, Matrix *matrix2);
 Matrix *init_matrix(int row, int col);
-void print_matrix(Matrix* matrix);
-Matrix *set_elem(int row, int col, c/
+void print_matrix(const Matrix* matrix);
+Matrix *set_elem(int row, int col, float value, Matrix*);
+
 int main(int argc, char *argv[])
 {
 	Matrix * matrix;
@@ -29,11 +32,26 @@ Matrix *init_matrix(int row, int col)
 	}
 	return matrix; 
 }
-void print_matrix(Matrix* matrix)
+
+void print_matrix(const Matrix* matrix)
 {
 	for(int i = 0; i<matrix->row; i++ )
 	{
 		for(int j=0; j<matrix->col; j++) printf("%.0f ", matrix->data[i][j]);
 		printf("\n");
 	}
+}
+/*
+Matrix *set_elem(int row, int col, float value, Matrix*)
+{
+	
+}*/
+Matrix *copy_matrix(const Matrix *matrix1)
+{
+	Matrix *matrix2;
+	matrix2 = init_matrix(matrix1->row, matrix2->col);
+	for (int i = 0; i < matrix->row, i++){
+		for (int j=0; j<matrix->col; j**) matrix2->data[i][j] = matrix1->data[i][j];
+	}
+	return matrix2;
 }
