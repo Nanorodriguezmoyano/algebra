@@ -13,6 +13,7 @@ void set_elem(int row, int col, float value, Matrix* matrix);
 Matrix *init_matrix(int row, int col);
 void print_matrix(const Matrix* matrix);
 Matrix *populate_matrix(int row, int col);
+void free_matrix(Matrix *matrix);
 
 int main(int argc, char *argv[])
 {
@@ -73,4 +74,15 @@ Matrix *populate_matrix(int row, int col)
     }
   }
   return matrix1;
+}
+void free_matrix(Matrix *matrix)
+{
+	if(matrix != NULL){
+		if(matrix->data != NULL){
+			for (int i = 0; i<matrix->row; i++){
+				if (matrix->data[i]) free((void *)matrix->data[i]);			
+			}
+			free((void *) matrix->data);
+	}
+	free((void *) matrix);
 }
