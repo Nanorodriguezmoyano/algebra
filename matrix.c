@@ -9,23 +9,18 @@ typedef struct Matrix{
 }Matrix;
 
 Matrix *copy_matrix(const Matrix *matrix1);
+void set_elem(int row, int col, float value, Matrix* matrix);
 Matrix *init_matrix(int row, int col);
 void print_matrix(const Matrix* matrix);
-Matrix *set_elem(int row, int col, float value,const Matrix* matrix);
+Matrix *populate_matrix(int row, int col);
 
 int main(int argc, char *argv[])
 {
-	int co, elem, fil;
+  int co, elem, fil;
 	Matrix * matrix;
-	Matrix * matrix2;
-	matrix = init_matrix(atoi(argv[1]),atoi(argv[2]));
-	print_matrix(matrix);
-	matrix2 = copy_matrix(matrix);
-	printf("Set row, and col to modify: ");
-	scanf("%d%d%d", &fil, &co, &elem);
-	matrix = set_elem(fil, co, elem, matrix);
-	print_matrix(matrix);
-
+  Matrix * matrix2;
+  matrix2 = populate_matrix(2,3);
+  print_matrix(matrix2);
 }
 Matrix *init_matrix(int row, int col)
 {
@@ -50,12 +45,10 @@ void print_matrix(const Matrix* matrix)
 	}
 }
 
-Matrix *set_elem(int row, int col, float value, const Matrix* matrix)
+void set_elem(int row, int col, float value, Matrix* matrix)
 {
-	Matrix * matrix2;
-	matrix2 = copy_matrix(matrix);
-	matrix2->data[row-1][col-1] = value;
-	return matrix2;
+	matrix->data[row-1][col-1] = value;
+	return;
 }
 Matrix *copy_matrix(const Matrix *matrix1)
 {
@@ -65,4 +58,19 @@ Matrix *copy_matrix(const Matrix *matrix1)
 		for (int j=0; j<matrix1->col; j++) matrix2->data[i][j] = matrix1->data[i][j];
 	}
 	return matrix2;
+}
+
+Matrix *populate_matrix(int row, int col)
+{
+  float elem;
+  Matrix * matrix1;
+  matrix1 = init_matrix(row, col);
+  printf("mete los valores wachin\n");
+  for (int i = 0; i < row; i++){
+    for (int j = 0; j < col; j++){
+      scanf("%f", &elem);
+	    matrix1->data[i][j] = elem;
+    }
+  }
+  return matrix1;
 }
