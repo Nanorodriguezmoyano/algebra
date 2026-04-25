@@ -21,7 +21,6 @@ int main(int argc, char *argv[])
 	matrix = init_matrix(atoi(argv[1]),atoi(argv[2]));
 	print_matrix(matrix);
 	matrix2 = copy_matrix(matrix);
-	print_matrix(matrix2);
 	printf("Set row, and col to modify: ");
 	scanf("%d%d%d", &fil, &co, &elem);
 	matrix = set_elem(fil, co, elem, matrix);
@@ -55,16 +54,15 @@ Matrix *set_elem(int row, int col, float value, const Matrix* matrix)
 {
 	Matrix * matrix2;
 	matrix2 = copy_matrix(matrix);
-	matrix2->data[row][col];
+	matrix2->data[row-1][col-1] = value;
 	return matrix2;
 }
 Matrix *copy_matrix(const Matrix *matrix1)
 {
 	Matrix *matrix2;
-	matrix2 = init_matrix(matrix1->row, matrix2->col);
+	matrix2 = init_matrix(matrix1->row, matrix1->col);
 	for (int i = 0; i < matrix1->row; i++){
 		for (int j=0; j<matrix1->col; j++) matrix2->data[i][j] = matrix1->data[i][j];
-		print("H");
 	}
 	return matrix2;
 }
