@@ -15,15 +15,28 @@ Matrix *set_elem(int row, int col, float value,const Matrix* matrix);
 
 int main(int argc, char *argv[])
 {
+	if(argc < 3) {
+		printf("Bad Arguments:\n matrix (rows) (cols)\n");
+		exit(1);
+	}
+	int rows = atoi(argv[1]);
+	int cols = atoi(argv[2]);
+	if(!rows || !cols) {
+		printf("Bad Arguments:\n matrix (rows) (cols)\n");
+		printf("rows and cols must be integers bigger than zero\n");
+		exit(1);
+	}
 	int co, elem, fil;
-	Matrix * matrix;
-	Matrix * matrix2;
+	Matrix* matrix;
+	Matrix* matrix2;
 	matrix = init_matrix(atoi(argv[1]),atoi(argv[2]));
 	print_matrix(matrix);
-	matrix2 = copy_matrix(matrix);
-	print_matrix(matrix2);
-	printf("Set row, and col to modify: ");
-	scanf("%d%d%d", &fil, &co, &elem);
+	printf("Set row: ");
+	scanf("%d", &fil);
+	printf("Set col: ");
+	scanf("%d", &co);
+	printf("Set elem: ");
+	scanf("%d", &elem);
 	matrix = set_elem(fil, co, elem, matrix);
 	print_matrix(matrix);
 
@@ -55,16 +68,29 @@ Matrix *set_elem(int row, int col, float value, const Matrix* matrix)
 {
 	Matrix * matrix2;
 	matrix2 = copy_matrix(matrix);
-	matrix2->data[row][col];
+	matrix2->data[row][col] = value;
 	return matrix2;
 }
 Matrix *copy_matrix(const Matrix *matrix1)
 {
 	Matrix *matrix2;
-	matrix2 = init_matrix(matrix1->row, matrix2->col);
+	matrix2 = init_matrix(matrix1->row, matrix1->col);
 	for (int i = 0; i < matrix1->row; i++){
 		for (int j=0; j<matrix1->col; j++) matrix2->data[i][j] = matrix1->data[i][j];
-		print("H");
 	}
 	return matrix2;
+}
+void free_matrix(const Matrix *matrix)
+{
+	if(matrix != NULL) {
+		if(matrix->data != NULL) {
+			for (int i = 0; i < matrix->row; i++) {
+				if(matrix->data[i] != NULL) {
+					free(matrix->data[i]);
+				}
+			}
+			free(matrix->data);
+		}
+		free(matrix);
+	}
 }
