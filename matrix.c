@@ -15,22 +15,24 @@ void print_matrix(const Matrix *matrix);
 Matrix *populate_matrix(int row, int col);
 void free_matrix(Matrix *matrix);
 Matrix *add_matrix(Matrix *matrix1, Matrix *matrix2);
-void scalar_multiplication(float val, Matrix *matrix);
+Matrix *scalar_multiplication(float val, Matrix *matrix);
+Matrix *transpose(Matrix *matrix);
 
 int main(int argc, char *argv[]) {
   Matrix *matrix;
-  Matrix *matrix2;
-  Matrix *matrix3;
-  Matrix *matrix4;
+  // Matrix *matrix2;
+  // Matrix *matrix3;
+  // Matrix *matrix4;
   matrix = populate_matrix(atoi(argv[1]), atoi(argv[2]));
   print_matrix(matrix);
-  matrix2 = populate_matrix(atoi(argv[1]), 3);
-  print_matrix(matrix2);
-  matrix3 = add_matrix(matrix, matrix2);
-  print_matrix(matrix3);
-  scalar_multiplication(4, matrix);
-  print_matrix(matrix);
+  // matrix2 = populate_matrix(atoi(argv[1]), 3);
+  // print_matrix(matrix2);
+  // matrix3 = add_matrix(matrix, matrix2);
+  // print_matrix(matrix3);
+  // print_matrix(scalar_multiplication(4, matrix));
+  print_matrix(transpose(matrix));
 }
+
 Matrix *init_matrix(int row, int col) {
   Matrix *matrix;
   matrix = calloc(1, sizeof(Matrix));
@@ -44,17 +46,25 @@ Matrix *init_matrix(int row, int col) {
 }
 
 void print_matrix(const Matrix *matrix) {
+  for (int i = 0; i < matrix->col; i++) printf("----");
+  printf("\n");
   for (int i = 0; i < matrix->row; i++) {
+    printf("|");
     for (int j = 0; j < matrix->col; j++)
-      printf("%.0f ", matrix->data[i][j]);
+      printf("%4.0f ", matrix->data[i][j]);
+    printf("|");
+    printf("\n");
+    for (int i = 0; i < matrix->col; i++) printf("----");
     printf("\n");
   }
+  for (int i = 0; i < (matrix->col + 2); i++) printf("-");
 }
 
 void set_elem(int row, int col, float value, Matrix *matrix) {
   matrix->data[row - 1][col - 1] = value;
   return;
 }
+
 Matrix *copy_matrix(const Matrix *matrix1) {
   Matrix *matrix2;
   matrix2 = init_matrix(matrix1->row, matrix1->col);
@@ -78,6 +88,7 @@ Matrix *populate_matrix(int row, int col) {
   }
   return matrix1;
 }
+
 void free_matrix(Matrix *matrix) {
   if (matrix != NULL) {
     if (matrix->data != NULL) {
@@ -107,10 +118,22 @@ Matrix *add_matrix(Matrix *matrix1, Matrix *matrix2) {
   return matrix3;
 }
 
-void scalar_multiplication(float val, Matrix *matrix){
-  for (int i = 0; i < matrix->row; i++) {
-    for (int j = 0; j < matrix->col; j++){
-      matrix->data[i][j] = (matrix->data[i][j]) * val;
+Matrix *scalar_multiplication(float val, Matrix *matrix1){
+  Matrix *matrix2 = init_matrix(matrix1->row, matrix1->col);
+  for (int i = 0; i < matrix1->row; i++) {
+    for (int j = 0; j < matrix1->col; j++){
+      matrix2->data[i][j] = (matrix1->data[i][j]) * val;
     }
   }
+  return matrix2;
+}
+
+Matrix *transpose(Matrix *matrix){
+  Matrix *transposed;
+  transposed = init_matrix(matrix->col, matrix->row);
+  for (int i = 0; i < matrix->row; i++) {
+    for (int j = 0; j < matrix->col; j++)
+      transposed->data[j][i] = matrix->data[i][j];
+  }
+  return transposed;
 }
