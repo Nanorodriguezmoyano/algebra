@@ -17,20 +17,22 @@ void free_matrix(Matrix *matrix);
 Matrix *add_matrix(Matrix *matrix1, Matrix *matrix2);
 Matrix *scalar_multiplication(float val, Matrix *matrix);
 Matrix *transpose(Matrix *matrix);
+Matrix *matrix_multiplication(Matrix *matrix1, Matrix *matrix2);
 
 int main(int argc, char *argv[]) {
   Matrix *matrix;
-  // Matrix *matrix2;
-  // Matrix *matrix3;
+  Matrix *matrix2;
+  Matrix *matrix3;
   // Matrix *matrix4;
   matrix = populate_matrix(atoi(argv[1]), atoi(argv[2]));
   print_matrix(matrix);
-  // matrix2 = populate_matrix(atoi(argv[1]), 3);
-  // print_matrix(matrix2);
+  matrix2 = populate_matrix(atoi(argv[2]), atoi(argv[1]));
+  print_matrix(matrix2);
   // matrix3 = add_matrix(matrix, matrix2);
   // print_matrix(matrix3);
   // print_matrix(scalar_multiplication(4, matrix));
-  print_matrix(transpose(matrix));
+  matrix3 = matrix_multiplication(matrix, matrix2);
+  print_matrix(matrix3);
 }
 
 Matrix *init_matrix(int row, int col) {
@@ -137,3 +139,26 @@ Matrix *transpose(Matrix *matrix){
   }
   return transposed;
 }
+
+Matrix *matrix_multiplication(Matrix *matrix1, Matrix *matrix2){
+  Matrix *result = init_matrix(matrix1->row, matrix2->col);
+  if (matrix1->row != matrix2->col){
+    printf("fijate las dimensiones de las matrices wachin\n");
+  } else {
+    for (int i = 0; i < matrix1->row; i++){
+      for (int j = 0; j < matrix2->col; j++){
+        for (int k = 0; k < matrix1->col; k++){
+          result->data[i][j] += matrix1->data[i][k] * matrix2->data[k][j];
+        }
+      }
+    }
+  }
+  return result;
+}
+
+// void lu_decomposition(const Matrix *matrix){
+//   Matrix *l = init_matrix(matrix->row, matrix->col);
+//   Matrix *u = copy_matrix(matrix);
+//
+//
+// }
