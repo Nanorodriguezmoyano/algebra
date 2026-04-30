@@ -39,6 +39,7 @@ int main(int argc, char *argv[]) {
   // print_matrix(matrix3);
   // print_matrix(matrix4);
   matrix2 = gaussian_elimination(matrix);
+  printf("\n\n\n");
   print_matrix(matrix2);
 }
 
@@ -163,6 +164,7 @@ Matrix *matrix_multiplication(const Matrix *matrix1, const Matrix *matrix2) {
 }
 
 // ARREGLAR
+/*
 Matrix *gaussian_elimination(const Matrix *matrix) {
   Matrix *result = copy_matrix(matrix);
   int pivot_pos[2] = {0, 0};
@@ -177,9 +179,60 @@ Matrix *gaussian_elimination(const Matrix *matrix) {
           result->data[i][j] -= (result->data[pivot_pos[0]][j] * (aux / pivot));
         }
       }
+    pivot_pos[0] ++;
+	pivot_pos[1] ++;//si el pivot no es cero, hace ceros debajo del pivot
+    }
+    else {
+    	
     }
   }
+  
   return result;
+} Hay veces quw hay que arrancar de cero
+*/
+Matrix *gaussian_elimination(const Matrix *matrix){
+/*
+ *La idea de esta funcion es la siguiente. 
+ Primero se selecciona un pivot y a partir de ahí tenemos 2 casos:
+ 	1. si el pivot no es cero simplemente se generan ceros debajo
+	2. Si no es empiezo a buscar un pivot que no sea cero.
+		Si encuentr: Intercambio las filas
+		Si no, muev el pivot a la derecha y repito.
+ */
+
+	Matrix *result = copy_matrix(matrix);
+	int pivot_pos[2] = {0,0}, pivto_pos_aux[2]; 	
+	float pivot, aux, factor; 
+
+	while( pivot_pos[0] < matrix->row && pivot_pos[1] < matrix->col)
+	{
+		pivot = matrix->data[pivot_pos[0]][pivot_pos[1]];
+		if (pivot) { //entra solamente si el pivot no es cero
+			for (int i = pivot_pos[0] + 1; i < matrix->row; i ++){
+				
+				aux = result->data[i][pivot_pos[1]];//valor a convertir en cero
+				if (aux == 0) continue;
+				factor = aux / pivot; 
+				printf("%.0f:%.0f   ", pivot, aux);
+				for (int j = pivot_pos[1]; j < matrix->col; j ++){
+					result->data[i][j] -= (matrix->data[pivot_pos[0]][j] * factor);
+				}
+			}
+			pivot_pos[0] ++;
+			pivot_pos[1] ++;
+		}
+		else{
+			for (int i = pivot_pos[0] + 1; i < matrix->row; i ++){
+				aux = result->data[i][pivot_pos[1]];//posible nuevo pivot
+				if( aux){
+					interchange_row(result, pivot_pos[0], i);
+					break;	
+				} 
+			}
+			pivot_pos[1] ++;
+		}
+	}
+	return result;
 }
 
 void interchange_row(Matrix *matrix, int row1, int row2) {
