@@ -39,6 +39,7 @@ int main(int argc, char *argv[]) {
   // print_matrix(matrix3);
   // print_matrix(matrix4);
   matrix2 = gaussian_elimination(matrix);
+  interchange_row(matrix, 0, 1);
   printf("\n\n\n");
   print_matrix(matrix2);
 }
@@ -213,7 +214,6 @@ Matrix *gaussian_elimination(const Matrix *matrix){
 				aux = result->data[i][pivot_pos[1]];//valor a convertir en cero
 				if (aux == 0) continue;
 				factor = aux / pivot; 
-				printf("%.0f:%.0f   ", pivot, aux);
 				for (int j = pivot_pos[1]; j < matrix->col; j ++){
 					result->data[i][j] -= (matrix->data[pivot_pos[0]][j] * factor);
 				}
@@ -224,6 +224,7 @@ Matrix *gaussian_elimination(const Matrix *matrix){
 		else{
 			for (int i = pivot_pos[0] + 1; i < matrix->row; i ++){
 				aux = result->data[i][pivot_pos[1]];//posible nuevo pivot
+				printf("%.0f:%.0f   ", pivot, aux);
 				if( aux){
 					interchange_row(result, pivot_pos[0], i);
 					break;	
@@ -236,9 +237,10 @@ Matrix *gaussian_elimination(const Matrix *matrix){
 }
 
 void interchange_row(Matrix *matrix, int row1, int row2) {
-  float *aux = matrix->data[row1];
-  memcpy(matrix->data[row1], matrix->data[row2], sizeof(float));
-  memcpy(matrix->data[row2], aux, sizeof(float));
+  float *aux = calloc (matrix->col, sizeof(float));
+ memcpy(aux,  matrix->data[row1], sizeof(float) * matrix->col);
+  memcpy(matrix->data[row1], matrix->data[row2], sizeof(float)* matrix->col);
+  memcpy(matrix->data[row2], aux, sizeof(float) *matrix->col);
   free(aux);
 }
 // void lu_decomposition(const Matrix *matrix){
