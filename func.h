@@ -1,7 +1,14 @@
 #include <stdio.h>
-#include <unitstd.h>
+//#include <unitstd.h>
 #include <stdlib.h>
-#inlcude <string.h>
+#include <string.h>
+
+// matrix[row][col]
+typedef struct Matrix {
+  int col;
+  int row;
+  float **data;
+} Matrix;
 
 Matrix *copy_matrix(const Matrix *matrix1);
 void set_elem(int row, int col, float value, Matrix *matrix);
