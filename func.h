@@ -1,0 +1,18 @@
+#include <stdio.h>
+#include <unitstd.h>
+#include <stdlib.h>
+#inlcude <string.h>
+
+Matrix *copy_matrix(const Matrix *matrix1);
+void set_elem(int row, int col, float value, Matrix *matrix);
+Matrix *init_matrix(int row, int col);
+void print_matrix(const Matrix *matrix);
+Matrix *populate_matrix(int row, int col);
+void free_matrix(Matrix *matrix);
+Matrix *add_matrix(Matrix *matrix1, Matrix *matrix2);
+Matrix *scalar_multiplication(float val, Matrix *matrix);
+Matrix *transpose(Matrix *matrix);
+Matrix *matrix_multiplication(const Matrix *matrix1, const Matrix *matrix2);
+Matrix *gaussian_elimination(const Matrix *matrix);
+void interchange_row(Matrix *matrix, int row1, int row2);
+float determinant(const Matrix *matrix);
