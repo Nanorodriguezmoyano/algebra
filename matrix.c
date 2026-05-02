@@ -1,53 +1,12 @@
 #include "func.h"
-/*
-#include <stdio.h>
-#include <stdio.h>
-//#include <unitstd.h>
-#include <stdlib.h>
-#include <string.h>
 
 // matrix[row][col]
-typedef struct Matrix {
-  int col;
-  int row;
-  float **data;
-} Matrix;
-
-Matrix *copy_matrix(const Matrix *matrix1);
-void set_elem(int row, int col, float value, Matrix *matrix);
-Matrix *init_matrix(int row, int col);
-void print_matrix(const Matrix *matrix);
-Matrix *populate_matrix(int row, int col);
-void free_matrix(Matrix *matrix);
-Matrix *add_matrix(Matrix *matrix1, Matrix *matrix2);
-Matrix *scalar_multiplication(float val, Matrix *matrix);
-Matrix *transpose(Matrix *matrix);
-Matrix *matrix_multiplication(const Matrix *matrix1, const Matrix *matrix2);
-Matrix *gaussian_elimination(const Matrix *matrix);
-void interchange_row(Matrix *matrix, int row1, int row2);
-float determinant(const Matrix *matrix);
-*/
 
 int main(int argc, char *argv[]) {
 	Matrix *matrix;
-	Matrix *matrix2;
-	// Matrix *matrix3;
-	// Matrix *matrix4;
-	matrix = populate_matrix(3, 3);
+//j	float data[] = {1.0,0.0,1.0,0.0};
+	matrix = populate_matrix_keyboard(2,2);
 	print_matrix(matrix);
-	printf("\n");
-	// matrix2 = populate_matrix(3, 2);
-	// print_matrix(matrix2);
-	// matrix3 = add_matrix(matrix, matrix2);
-	// // print_matrix(matrix3);
-	// // print_matrix(scalar_multiplication(4, matrix));
-	// matrix4 = matrix_multiplication(matrix, matrix2);
-	// print_matrix(matrix3);
-	// print_matrix(matrix4);
-	matrix2 = gaussian_elimination(matrix);
-	printf("\n\n\n");
-	print_matrix(matrix2);
-	printf("%.4f\n", determinant(matrix)); 
 }
 
 Matrix *init_matrix(int row, int col) {
@@ -89,18 +48,38 @@ Matrix *copy_matrix(const Matrix *matrix1) {
 	return matrix2;
 }
 
-Matrix *populate_matrix(int row, int col) {
+//Para hacer la funcion mas versatil, la funcion ya recibe el array de numeros, y es trabajo de otra funcion como consigue el array.
+//Se asume que se recibe la cantidad adecuada de valores. Si se recibe mas, los ulimos los desechará, y si recibe menos, completará con cero.
+Matrix *populate_matrix(int row, int col, const float *data) {
 	float elem;
 	Matrix *matrix1;
 	matrix1 = init_matrix(row, col);
-	printf("mete los valores wachin\n");
 	for (int i = 0; i < row; i++) {
 		for (int j = 0; j < col; j++) {
-			scanf("%f", &elem);
+			elem = *(data ++);	
 			matrix1->data[i][j] = elem;
 		}
 	}
 	return matrix1;
+}
+
+//para directamente llenar una desde el teclado.
+Matrix *populate_matrix_keyboard(int row, int col){
+	Matrix *matrix; 
+	float *data;
+	float *aux;
+	data = calloc(col*row, sizeof(float));
+	aux = data;
+	printf("Mete los valores wachin\n");
+	for (int i = 0; i< row; i++){
+		for (int j=0; j<col; j++){
+			scanf("%f", aux++);
+		}		
+	}
+	matrix = populate_matrix(row, col, data);
+	free((void*)data);
+	return matrix;
+
 }
 
 void free_matrix(Matrix *matrix) {
