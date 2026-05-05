@@ -27,7 +27,7 @@ Matrix *init_matrix(int row, int col) {
 
 void print_matrix(const Matrix *matrix) {
 	if (matrix == NULL) {
-		printf("sos un wachin no se puede imprimir\n");
+		printf("ERROR print_matrix: sos un wachin no se puede imprimir\n");
 	} else {
 		for (int i = 0; i < matrix->row; i++) {
 			for (int j = 0; j < matrix->col; j++)
@@ -77,6 +77,7 @@ Matrix *populate_matrix_keyboard(int row, int col){
 	printf("Mete los valores wachin\n");
 	for (int i = 0; i< row; i++){
 		for (int j=0; j<col; j++){
+			printf("Posicion %d %d: ", row + 1, col + 1);
 			scanf("%f", aux++);
 		}		
 	}
@@ -110,7 +111,7 @@ Matrix *add_matrix(Matrix *matrix1, Matrix *matrix2) {
 		}
 		return matrix3;
 	} else {
-		printf("sos un wachin como vas a sumar matrices de diferente dimension. "
+		printf("ERROR add_matrix: sos un wachin como vas a sumar matrices de diferente dimension. "
 				"kabum\n");
 		return NULL;
 	}
@@ -139,7 +140,7 @@ Matrix *transpose(Matrix *matrix) {
 Matrix *matrix_multiplication(const Matrix *matrix1, const Matrix *matrix2) {
 	Matrix *result = init_matrix(matrix1->row, matrix2->col);
 	if (matrix1->row != matrix2->col) {
-		printf("fijate las dimensiones de las matrices wachin\n");
+		printf("ERROR matrix_multiplication: fijate las dimensiones de las matrices wachin\n");
 		return NULL;
 	} else {
 		for (int i = 0; i < matrix1->row; i++) {
@@ -217,7 +218,7 @@ void interchange_row(Matrix *matrix, int row1, int row2) {
 // }
 float determinant(const Matrix *matrix) {
 	if (matrix->row - matrix->col) {
-		printf("Estas queriedo hacer un determinante de una cuadrada wachin\n"); //Ayuda para debuggear nomas
+		printf("ERROR determinant: Estas queriedo hacer un determinante de una cuadrada wachin\n"); //Ayuda para debuggear nomas
 		return 0;
 	}
 	Matrix * triangular = gaussian_elimination(matrix);
