@@ -3,10 +3,14 @@
 // matrix[row][col]
 
 int main(int argc, char *argv[]) {
-	Matrix *matrix;
-//j	float data[] = {1.0,0.0,1.0,0.0};
-	matrix = populate_matrix_keyboard(2,2);
-	print_matrix(matrix);
+	Matrix *matrix, *matrix2, *matrix3;
+	float data[] = {1.0,5.0,1.0,6.0};
+	float data2[] = {2.0, 2.0, 2.0, 2.0};
+	matrix = populate_matrix(2,2, data);
+	matrix2 = populate_matrix(2,2, data2);
+	matrix3 = concatenate_matrix(matrix, matrix2);
+	print_matrix(matrix2);
+	print_matrix(matrix3);
 }
 
 Matrix *init_matrix(int row, int col) {
@@ -226,4 +230,26 @@ float determinant(const Matrix *matrix) {
 	}
 	free_matrix(triangular);
 	return result;
+
+}
+Matrix *concatenate_matrix(const Matrix *matrix1, const Matrix *matrix2){
+	if (matrix1->row - matrix2->row) {
+		printf("ERROR CONCATENATE: No coinciden las columnas\n");
+	}
+	Matrix *result = init_matrix(matrix1->row, 2*matrix1->col);
+	for (int i = 0; i < matrix1->row; i++) {
+		for (int j = 0; j < matrix1->col; j++){
+			result->data[i][j] = matrix1->data[i][j];
+			if (j < matrix2->col){
+			       	result->data[i][j+matrix1->col] = matrix2->data[i][j];
+			}
+		}	
+		if (matrix1->col < matrix2->col) {
+				for (int j = (matrix1->col) *2; j < matrix1->col + matrix2->col; j++) result->data[i][j] = matrix2->data[i][j - matrix1->col]; 
+			}
+	}
+			
+	return result;
+	
+       	
 }

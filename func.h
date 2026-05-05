@@ -24,4 +24,5 @@ Matrix *matrix_multiplication(const Matrix *matrix1, const Matrix *matrix2);
 Matrix *gaussian_elimination(const Matrix *matrix);
 void interchange_row(Matrix *matrix, int row1, int row2);
 float determinant(const Matrix *matrix);
+Matrix *concatenate_matrix(const Matrix *matrix1, const Matrix *matrix2);
 Matrix *populate_matrix_keyboard(int row, int col);
