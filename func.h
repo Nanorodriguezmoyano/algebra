@@ -26,4 +26,8 @@ void interchange_row(Matrix *matrix, int row1, int row2);
 float determinant(const Matrix *matrix);
 Matrix *concatenate_matrix(const Matrix *matrix1, const Matrix *matrix2);
 Matrix *populate_matrix_keyboard(int row, int col);
+<<<<<<< HEAD
 void mitosis_matrix(const Matrix *matrix, Matrix **result1, Matrix **result2, int i);
+=======
+float cofactor(int row, int col, Matrix *matrix);
+>>>>>>> e38e559afec41c9a10d09f2341b47c09d656833a
