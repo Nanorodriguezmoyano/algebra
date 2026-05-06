@@ -4,12 +4,13 @@
 
 int main(int argc, char *argv[]) {
 	Matrix *matrix, *matrix2, *matrix3;
-	float data[] = {1.0,5.0,1.0,6.0};
-	float data2[] = {2.0, 2.0, 2.0, 2.0};
-	matrix = populate_matrix(2,2, data);
-	matrix2 = populate_matrix(2,2, data2);
-	matrix3 = concatenate_matrix(matrix, matrix2);
+	float data[] = {1.0,5.0,1.0,6.0, 1.0, 1.0 ,1.0, 2.0 };
+	matrix = populate_matrix(2,4, data);
+	print_matrix(matrix);
+	mitosis_matrix(matrix, &matrix2, &matrix3, 2);
+	printf("\n\n\n");
 	print_matrix(matrix2);
+	printf("\n\n\n");
 	print_matrix(matrix3);
 }
 
@@ -253,4 +254,34 @@ Matrix *concatenate_matrix(const Matrix *matrix1, const Matrix *matrix2){
 	return result;
 	
        	
+}
+//recibe punteros a la funciones 
+//recibe las dos matrices donde va a guardar las matrices separadas, y la cantidad de columnas de la primera.
+void mitosis_matrix(const Matrix *matrix, Matrix **result1, Matrix **result2, int col1)
+{
+	if (col1 >= matrix->col) {
+		printf("ERROR MITOSIS: columnas de la segunda matriz, menor o igual a 0\n");
+		return;
+	}
+	int col2 = matrix->col - col1; 
+	float *data1,  *data2, *aux1, *aux2;
+	
+	data1 = calloc(matrix->row * col1, sizeof(float));
+	data2 = calloc(matrix->row * col2, sizeof(float));
+	aux1 = data1;
+	aux2 = data2;
+
+	//llene los vecctores de data
+	for(int i = 0; i < matrix->row; i++){
+		for (int j = 0; j < col1; j++){
+			*(aux1++) = matrix->data[i][j]; 
+		}
+		for (int j = col1; j < matrix->col; j++){
+			*(aux2++) = matrix->data[i][j];
+		}
+	}
+	*result1 = populate_matrix(matrix->row, col1, data1);
+	*result2 = populate_matrix(matrix->row, col2, data2);
+	return;
+
 }
