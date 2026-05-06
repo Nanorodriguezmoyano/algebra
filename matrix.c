@@ -2,14 +2,6 @@
 
 // matrix[row][col]
 
-int main(int argc, char *argv[]) {
-	Matrix *matrix;
-	float data[] = {1.0,5.0,1.0,6.0,4.0,12.0,2.0,1.0,1.0};
-	matrix = populate_matrix(3,3, data);
-  print_matrix(matrix);
-  printf("aca tenes tu cofactor wachin %f\n", cofactor(0, 0, matrix));
-}
-
 Matrix *init_matrix(int row, int col) {
 	Matrix *matrix;
 	matrix = calloc(1, sizeof(Matrix));
@@ -152,6 +144,7 @@ Matrix *matrix_multiplication(const Matrix *matrix1, const Matrix *matrix2) {
 }
 
 
+
 Matrix *gaussian_elimination(const Matrix *matrix){
 	/*
 	 *La idea de esta funcion es la siguiente. 
@@ -279,7 +272,37 @@ void mitosis_matrix(const Matrix *matrix, Matrix **result1, Matrix **result2, in
 	*result1 = populate_matrix(matrix->row, col1, data1);
 	*result2 = populate_matrix(matrix->row, col2, data2);
 	return;
+}
 
+Matrix *identity(int dim){
+	Matrix *matrix;
+	float *data;
+	data = calloc(dim * dim, sizeof(float));
+	
+	for (int i = 0; i < dim; i ++){
+		data[i * (dim + 1)] = 1;
+	}	
+	
+	matrix = populate_matrix(dim, dim, data);
+	free((void *) data);
+	return matrix;
+}
+/*
+Matrix *inverse(const Matrix *matrix){
+	if (!determinant(matrix)){
+		printf("ERROR Inverse: matriz no tiene inversa\n");
+		return NULL;
+	}
+	if (matrix->col - matrix->row){
+		printf("Error Inverse: quiere calcular inversa de una no cuadrada\n");
+		return NULL;
+	}
+	Matrix *identity, *concatenate,*aux, *aux_righ,*inverse;
+	identity = identity(matrix->col);
+	concatenat = concatenate_matrix(matrix, identity);
+	aux = gaussian_elimination(jfskjfadsjklñadfkjlñladsfljkñadsfjklfadskjlñladsfkjlñadsfkjlladsfkjlñadsfkjlladsfljk
+}
+*/
 
 float cofactor(int row, int col, Matrix *matrix){
   float *data = calloc((matrix->row -1)*(matrix->row -1), sizeof(float));
