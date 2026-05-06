@@ -3,14 +3,11 @@
 // matrix[row][col]
 
 int main(int argc, char *argv[]) {
-	Matrix *matrix, *matrix2, *matrix3;
-	float data[] = {1.0,5.0,1.0,6.0};
-	float data2[] = {2.0, 2.0, 2.0, 2.0};
-	matrix = populate_matrix(2,2, data);
-	matrix2 = populate_matrix(2,2, data2);
-	matrix3 = concatenate_matrix(matrix, matrix2);
-	print_matrix(matrix2);
-	print_matrix(matrix3);
+	Matrix *matrix;
+	float data[] = {1.0,5.0,1.0,6.0,4.0,12.0,2.0,1.0,1.0};
+	matrix = populate_matrix(3,3, data);
+  print_matrix(matrix);
+  printf("aca tenes tu cofactor wachin %f\n", cofactor(0, 0, matrix));
 }
 
 Matrix *init_matrix(int row, int col) {
@@ -253,4 +250,26 @@ Matrix *concatenate_matrix(const Matrix *matrix1, const Matrix *matrix2){
 	return result;
 	
        	
+}
+
+
+float cofactor(int row, int col, Matrix *matrix){
+  float *data = calloc((matrix->row -1)*(matrix->row -1), sizeof(float));
+  float cofactor;
+  int k = 0;
+
+  for (int i = 0; i < matrix->row; i++){
+    for (int j = 0; j < matrix->col; j++){
+      if (i != row && j != col){
+        data[k++] = matrix->data[i][j];
+      }
+    }
+  }
+
+  cofactor = determinant(populate_matrix((matrix->row)-1, (matrix->col)-1, data));
+  if (cofactor != 0 && (row + col + 2) % 2 != 0){
+   cofactor = cofactor * (-1); 
+  }
+
+  return cofactor;
 }

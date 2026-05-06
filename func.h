@@ -26,3 +26,4 @@ void interchange_row(Matrix *matrix, int row1, int row2);
 float determinant(const Matrix *matrix);
 Matrix *concatenate_matrix(const Matrix *matrix1, const Matrix *matrix2);
 Matrix *populate_matrix_keyboard(int row, int col);
+float cofactor(int row, int col, Matrix *matrix);
