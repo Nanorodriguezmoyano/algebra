@@ -28,4 +28,5 @@ Matrix *concatenate_matrix(const Matrix *matrix1, const Matrix *matrix2);
 Matrix *populate_matrix_keyboard(int row, int col);
 void mitosis_matrix(const Matrix *matrix, Matrix **result1, Matrix **result2, int i);
 float cofactor(int row, int col, Matrix *matrix);
-Matrix *identity(int dim);
+Matrix *identity_matrix(int dim);
+Matrix *inverse(const Matrix *matrix);

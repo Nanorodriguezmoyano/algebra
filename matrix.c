@@ -1,5 +1,6 @@
-#include "func.h"
 
+#include "func.h"
+#define PRUEBA printf("a\n");
 // matrix[row][col]
 
 Matrix *init_matrix(int row, int col) {
@@ -66,7 +67,7 @@ Matrix *populate_matrix_keyboard(int row, int col){
 	printf("Mete los valores wachin\n");
 	for (int i = 0; i< row; i++){
 		for (int j=0; j<col; j++){
-			printf("Posicion %d %d: ", row + 1, col + 1);
+			printf("Posicion %d %d: ", i + 1, j + 1);
 			scanf("%f", aux++);
 		}		
 	}
@@ -225,7 +226,7 @@ float determinant(const Matrix *matrix) {
 }
 Matrix *concatenate_matrix(const Matrix *matrix1, const Matrix *matrix2){
 	if (matrix1->row - matrix2->row) {
-		printf("ERROR CONCATENATE: No coinciden las columnas\n");
+		printf("ERROR CONCATENATE: No coinciden las filas\n");
 	}
 	Matrix *result = init_matrix(matrix1->row, 2*matrix1->col);
 	for (int i = 0; i < matrix1->row; i++) {
@@ -274,7 +275,7 @@ void mitosis_matrix(const Matrix *matrix, Matrix **result1, Matrix **result2, in
 	return;
 }
 
-Matrix *identity(int dim){
+Matrix *identity_matrix(int dim){
 	Matrix *matrix;
 	float *data;
 	data = calloc(dim * dim, sizeof(float));
@@ -287,7 +288,6 @@ Matrix *identity(int dim){
 	free((void *) data);
 	return matrix;
 }
-/*
 Matrix *inverse(const Matrix *matrix){
 	if (!determinant(matrix)){
 		printf("ERROR Inverse: matriz no tiene inversa\n");
@@ -297,12 +297,49 @@ Matrix *inverse(const Matrix *matrix){
 		printf("Error Inverse: quiere calcular inversa de una no cuadrada\n");
 		return NULL;
 	}
-	Matrix *identity, *concatenate,*aux, *aux_righ,*inverse;
-	identity = identity(matrix->col);
-	concatenat = concatenate_matrix(matrix, identity);
-	aux = gaussian_elimination(jfskjfadsjklñadfkjlñladsfljkñadsfjklfadskjlñladsfkjlñadsfkjlladsfkjlñadsfkjlladsfljk
+
+	int dim = matrix->row;
+	float pivot;
+	Matrix *identity, *concatenate,*aux, *aux_right,*inverse, *concatenate_aux;
+
+	identity = identity_matrix(dim);
+	concatenate = concatenate_matrix(matrix, identity);
+
+	concatenate_aux = gaussian_elimination(concatenate);
+
+	free_matrix(concatenate);
+	free_matrix(identity);
+
+	mitosis_matrix(concatenate_aux, &aux, &identity, dim);
+
+	free_matrix(concatenate_aux);
+	aux_right =  transpose(aux);
+	inverse = transpose(identity);
+
+	free_matrix(aux);
+	free_matrix(identity);
+
+	concatenate = concatenate_matrix(aux_right, inverse);
+	concatenate_aux = gaussian_elimination(concatenate);
+
+	free_matrix(concatenate);
+	free_matrix(aux_right);
+	free_matrix(inverse);
+	
+	mitosis_matrix(concatenate_aux, &aux_right, &inverse, dim);
+	//print_matrix(aux_right);
+	//print_matrix(inverse);
+	for (int i = 0; i< dim; i++){
+		pivot = aux_right->data[i][i];
+		for (int j = 0; j < dim; j++){
+			inverse->data[i][j] *= (1/pivot);
+		}
+	}
+	free_matrix(aux_right);
+	free_matrix(concatenate_aux);
+
+	return inverse;
 }
-*/
 
 float cofactor(int row, int col, Matrix *matrix){
   float *data = calloc((matrix->row -1)*(matrix->row -1), sizeof(float));
