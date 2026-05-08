@@ -1,6 +1,6 @@
 
 #include "func.h"
-#define PRUEBA printf("a\n");
+#define PRUEBA printf("LLEGUE a linea %d\n", __LINE__);
 // matrix[row][col]
 
 Matrix *init_matrix(int row, int col) {
@@ -8,9 +8,9 @@ Matrix *init_matrix(int row, int col) {
 	matrix = calloc(1, sizeof(Matrix));
 	matrix->col = col;
 	matrix->row = row;
-	matrix->data = calloc(matrix->row, sizeof(float *));
+	matrix->data = calloc(matrix->row, sizeof(double *));
 	for (int i = 0; i < row; i++) {
-		matrix->data[i] = calloc(col, sizeof(float));
+		matrix->data[i] = calloc(col, sizeof(double));
 	}
 	return matrix;
 }
@@ -27,7 +27,7 @@ void print_matrix(const Matrix *matrix) {
 	}
 }
 
-void set_elem(int row, int col, float value, Matrix *matrix) {
+void set_elem(int row, int col, double value, Matrix *matrix) {
 	matrix->data[row - 1][col - 1] = value;
 	return;
 }
@@ -44,8 +44,8 @@ Matrix *copy_matrix(const Matrix *matrix1) {
 
 //Para hacer la funcion mas versatil, la funcion ya recibe el array de numeros, y es trabajo de otra funcion como consigue el array.
 //Se asume que se recibe la cantidad adecuada de valores. Si se recibe mas, los ulimos los desechará, y si recibe menos, completará con cero.
-Matrix *populate_matrix(int row, int col, const float *data) {
-	float elem;
+Matrix *populate_matrix(int row, int col, const double *data) {
+	double elem;
 	Matrix *matrix1;
 	matrix1 = init_matrix(row, col);
 	for (int i = 0; i < row; i++) {
@@ -60,15 +60,15 @@ Matrix *populate_matrix(int row, int col, const float *data) {
 //para directamente llenar una desde el teclado.
 Matrix *populate_matrix_keyboard(int row, int col){
 	Matrix *matrix; 
-	float *data;
-	float *aux;
-	data = calloc(col*row, sizeof(float));
+	double *data;
+	double *aux;
+	data = calloc(col*row, sizeof(double));
 	aux = data;
 	printf("Mete los valores wachin\n");
 	for (int i = 0; i< row; i++){
 		for (int j=0; j<col; j++){
 			printf("Posicion %d %d: ", i + 1, j + 1);
-			scanf("%f", aux++);
+			scanf("%lf", aux++);
 		}		
 	}
 	matrix = populate_matrix(row, col, data);
@@ -107,7 +107,7 @@ Matrix *add_matrix(Matrix *matrix1, Matrix *matrix2) {
 	}
 }
 
-Matrix *scalar_multiplication(float val, Matrix *matrix1) {
+Matrix *scalar_multiplication(double val, Matrix *matrix1) {
 	Matrix *matrix2 = init_matrix(matrix1->row, matrix1->col);
 	for (int i = 0; i < matrix1->row; i++) {
 		for (int j = 0; j < matrix1->col; j++) {
@@ -128,6 +128,10 @@ Matrix *transpose(Matrix *matrix) {
 }
 
 Matrix *matrix_multiplication(const Matrix *matrix1, const Matrix *matrix2) {
+	if (matrix1 == NULL ||  matrix2 == NULL){
+		printf("ERROR matrix multiplication: quiere multiplicar una matriz que no existe\n");
+		return NULL;
+	}
 	Matrix *result = init_matrix(matrix1->row, matrix2->col);
 	if (matrix1->row != matrix2->col) {
 		printf("ERROR matrix_multiplication: fijate las dimensiones de las matrices wachin\n");
@@ -136,6 +140,7 @@ Matrix *matrix_multiplication(const Matrix *matrix1, const Matrix *matrix2) {
 		for (int i = 0; i < matrix1->row; i++) {
 			for (int j = 0; j < matrix2->col; j++) {
 				for (int k = 0; k < matrix1->col; k++) {
+					if (!(matrix1->data[i][k] || matrix2->data[k][j])) continue;
 					result->data[i][j] += matrix1->data[i][k] * matrix2->data[k][j];
 				}
 			}
@@ -158,7 +163,7 @@ Matrix *gaussian_elimination(const Matrix *matrix){
 
 	Matrix *result = copy_matrix(matrix);
 	int pivot_pos[2] = {0,0}; 
-	float pivot, aux, factor; 
+	double pivot, aux, factor; 
 
 	while((pivot_pos[0] < matrix->row && pivot_pos[1] < matrix->col))
 	{
@@ -194,26 +199,26 @@ Matrix *gaussian_elimination(const Matrix *matrix){
 }
 
 void interchange_row(Matrix *matrix, int row1, int row2) {
-	float *aux = calloc (matrix->col, sizeof(float));
-	memcpy(aux,  matrix->data[row1], sizeof(float) * matrix->col);
+	double *aux = calloc (matrix->col, sizeof(double));
+	memcpy(aux,  matrix->data[row1], sizeof(double) * matrix->col);
 	for(int i = 0; i < matrix->col; i++){
 		if (aux[i]) aux[i]*=-1;
 	}
-	memcpy(matrix->data[row1], matrix->data[row2], sizeof(float)* matrix->col);
-	memcpy(matrix->data[row2], aux, sizeof(float) *matrix->col);
+	memcpy(matrix->data[row1], matrix->data[row2], sizeof(double)* matrix->col);
+	memcpy(matrix->data[row2], aux, sizeof(double) *matrix->col);
 	free(aux);
 }
 // void lu_decomposition(const Matrix *matrix){
 //   Matrix *l = init_matrix(matrix->row, matrix->col);
 //   Matrix *u = copy_matrix(matrix);
 // }
-float determinant(const Matrix *matrix) {
+double determinant(const Matrix *matrix) {
 	if (matrix->row - matrix->col) {
 		printf("ERROR determinant: Estas queriedo hacer un determinante de una cuadrada wachin\n"); //Ayuda para debuggear nomas
 		return 0;
 	}
 	Matrix * triangular = gaussian_elimination(matrix);
-	float result = 1, value;
+	double result = 1, value;
 
 	for (int i = 0; i < matrix->row; i++){
 		value = triangular->data[i][i];
@@ -254,10 +259,10 @@ void mitosis_matrix(const Matrix *matrix, Matrix **result1, Matrix **result2, in
 		return;
 	}
 	int col2 = matrix->col - col1; 
-	float *data1,  *data2, *aux1, *aux2;
+	double *data1,  *data2, *aux1, *aux2;
 	
-	data1 = calloc(matrix->row * col1, sizeof(float));
-	data2 = calloc(matrix->row * col2, sizeof(float));
+	data1 = calloc(matrix->row * col1, sizeof(double));
+	data2 = calloc(matrix->row * col2, sizeof(double));
 	aux1 = data1;
 	aux2 = data2;
 
@@ -277,8 +282,8 @@ void mitosis_matrix(const Matrix *matrix, Matrix **result1, Matrix **result2, in
 
 Matrix *identity_matrix(int dim){
 	Matrix *matrix;
-	float *data;
-	data = calloc(dim * dim, sizeof(float));
+	double *data;
+	data = calloc(dim * dim, sizeof(double));
 	
 	for (int i = 0; i < dim; i ++){
 		data[i * (dim + 1)] = 1;
@@ -288,6 +293,41 @@ Matrix *identity_matrix(int dim){
 	free((void *) data);
 	return matrix;
 }
+
+Matrix *gauss_jordan_elimination(const Matrix *matrix){
+	Matrix  *result;
+	int dim, pivot_col, pivot_row;
+	double pivot, factor, aux;
+	if (matrix->row > matrix->col) dim = matrix->col;
+	else dim = matrix->row;
+	result = gaussian_elimination(matrix);
+	
+	pivot_col = dim - 1; pivot_row = dim - 1;
+
+	while(pivot_row && pivot_col){
+		pivot = result->data[pivot_row][pivot_col];
+		if (pivot){//entra solamente si el pivot no es cero
+			for(int i = 0; i<pivot_row; i++){
+				aux = result->data[i][pivot_col];
+				if (aux == 0) continue;
+				factor = aux / pivot;
+				for(int j = pivot_col; j < result->col; j++){
+					result->data[i][j] -= (result->data[pivot_row][j] * factor);
+				}
+			}	
+		pivot_col --; pivot_row --;
+		}
+		else {
+			if((pivot_col + 1) < result->col) pivot_col ++;
+			else pivot_row --;
+		}
+	}
+	return result;
+	
+	
+	
+}
+
 Matrix *inverse(const Matrix *matrix){
 	if (!determinant(matrix)){
 		printf("ERROR Inverse: matriz no tiene inversa\n");
@@ -299,51 +339,30 @@ Matrix *inverse(const Matrix *matrix){
 	}
 
 	int dim = matrix->row;
-	float pivot;
-	Matrix *identity, *concatenate,*aux, *aux_right,*inverse, *concatenate_aux;
-
+	double pivot;
+	Matrix *identity, *concatenate,*aux, *inverse, *concatenate_aux;
+	
 	identity = identity_matrix(dim);
 	concatenate = concatenate_matrix(matrix, identity);
+	concatenate_aux = gauss_jordan_elimination(concatenate);
+	mitosis_matrix(concatenate_aux, &aux, &inverse, dim);
 
-	concatenate_aux = gaussian_elimination(concatenate);
-
-	free_matrix(concatenate);
-	free_matrix(identity);
-
-	mitosis_matrix(concatenate_aux, &aux, &identity, dim);
-
-	free_matrix(concatenate_aux);
-	aux_right =  transpose(aux);
-	inverse = transpose(identity);
-
-	free_matrix(aux);
-	free_matrix(identity);
-
-	concatenate = concatenate_matrix(aux_right, inverse);
-	concatenate_aux = gaussian_elimination(concatenate);
-
-	free_matrix(concatenate);
-	free_matrix(aux_right);
-	free_matrix(inverse);
-	
-	mitosis_matrix(concatenate_aux, &aux_right, &inverse, dim);
-	//print_matrix(aux_right);
-	//print_matrix(inverse);
 	for (int i = 0; i< dim; i++){
-		pivot = aux_right->data[i][i];
+		pivot = aux->data[i][i];
 		for (int j = 0; j < dim; j++){
 			inverse->data[i][j] *= (1/pivot);
 		}
 	}
-	free_matrix(aux_right);
+	free_matrix(concatenate);
+	free_matrix(identity);
+	free_matrix(aux);
 	free_matrix(concatenate_aux);
-
 	return inverse;
 }
 
-float cofactor(int row, int col, Matrix *matrix){
-  float *data = calloc((matrix->row -1)*(matrix->row -1), sizeof(float));
-  float cofactor;
+double cofactor(int row, int col, Matrix *matrix){
+  double *data = calloc((matrix->row -1)*(matrix->row -1), sizeof(double));
+  double cofactor;
   int k = 0;
 
   for (int i = 0; i < matrix->row; i++){
