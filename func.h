@@ -31,3 +31,6 @@ double cofactor(int row, int col, Matrix *matrix);
 Matrix *identity_matrix(int dim);
 Matrix *inverse(const Matrix *matrix);
 Matrix *gauss_jordan_elimination(const Matrix *matrix);
+Matrix *cofactor_matrix(Matrix *matrix);
+Matrix *adjoint_matrix(Matrix *matrix);
+Matrix *fast_inverse(Matrix *inverse);

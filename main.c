@@ -4,14 +4,13 @@
 int main(int argc, char **arcgv){
 	int con = 1;
 	do{
-		Matrix *matrix, *inversa, *aux;
-		matrix = populate_matrix_keyboard(2,2);
-		inversa = inverse(matrix);
-		print_matrix(inversa);	
-		aux = matrix_multiplication(matrix, inversa);
-		printf("\n\n");
+		Matrix *matrix, *cofactor, *aux;
+		matrix = populate_matrix_keyboard(8, 8);
+		cofactor = fast_inverse(matrix);
+		aux = inverse(matrix);
+		print_matrix(cofactor);
+		printf("\n");
 		print_matrix(aux);
-
 
 
 

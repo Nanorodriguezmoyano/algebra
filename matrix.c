@@ -380,3 +380,58 @@ double cofactor(int row, int col, Matrix *matrix){
 
   return cofactor;
 }
+
+Matrix *cofactor_matrix(Matrix *matrix){	
+	if (matrix == NULL){
+		printf("ERROR COFACTOR: sos muy wachin, me diste una matriz que no existe\n");
+		return NULL;
+	}
+	if (matrix->col - matrix->row){
+		printf("ERROR COFACTOR: sos muy wachin, me diste una matriz no cuadrada\n");
+	}
+
+	int dim = matrix->row;
+	Matrix *result = init_matrix(dim, dim);
+
+	for (int i = 0; i < dim; i ++){
+		for (int j = 0; j < dim; j++){
+			result->data[i][j] = cofactor(i, j, matrix);
+		}
+	}
+	return result;
+
+}
+Matrix *adjoint_matrix(Matrix *matrix){
+	if (matrix == NULL){
+		printf("ERROR COFACTOR: sos muy wachin, me diste una matriz que no existe\n");
+		return NULL;
+	}
+	if (matrix->col - matrix->row){
+		printf("ERROR COFACTOR: sos muy wachin, me diste una matriz no cuadrada\n");
+	}
+	
+	Matrix *result, *cofactor = cofactor_matrix(matrix);
+	result = transpose(cofactor);
+	free_matrix(cofactor);
+	return result;
+
+}
+
+Matrix *fast_inverse(Matrix *matrix){
+	if (!determinant(matrix)){
+		printf("ERROR Inverse: matriz no tiene inversa\n");
+		return NULL;
+	}
+	if (matrix->col - matrix->row){
+		printf("Error Inverse: quiere calcular inversa de una no cuadrada\n");
+		return NULL;
+	}
+
+	Matrix *result, *adjoint;
+
+	adjoint = adjoint_matrix(matrix);
+	result = scalar_multiplication(1 / determinant(matrix), adjoint);
+	free_matrix(adjoint);
+
+	return result;
+}
