@@ -33,6 +33,10 @@ void set_elem(int row, int col, double value, Matrix *matrix) {
 }
 
 Matrix *copy_matrix(const Matrix *matrix1) {
+	if (matrix1 == NULL){
+		printf("ERROR copy_matrix: como queres copiar algo que no existe\n");
+		return NULL;
+	}
 	Matrix *matrix2;
 	matrix2 = init_matrix(matrix1->row, matrix1->col);
 	for (int i = 0; i < matrix1->row; i++) {
@@ -108,9 +112,13 @@ Matrix *add_matrix(Matrix *matrix1, Matrix *matrix2) {
 }
 
 Matrix *scalar_multiplication(double val, Matrix *matrix1) {
+	if (val == 0){
+		return init_matrix(matrix1->row, matrix2->col); //si es cero directamente devuelvo la nula
+	}
 	Matrix *matrix2 = init_matrix(matrix1->row, matrix1->col);
 	for (int i = 0; i < matrix1->row; i++) {
 		for (int j = 0; j < matrix1->col; j++) {
+			if (matrix2->data[i][j] == 0) continue; //si es cero no multiplica para evitar el -0
 			matrix2->data[i][j] = (matrix1->data[i][j]) * val;
 		}
 	}
@@ -140,7 +148,7 @@ Matrix *matrix_multiplication(const Matrix *matrix1, const Matrix *matrix2) {
 		for (int i = 0; i < matrix1->row; i++) {
 			for (int j = 0; j < matrix2->col; j++) {
 				for (int k = 0; k < matrix1->col; k++) {
-					if (!(matrix1->data[i][k] || matrix2->data[k][j])) continue;
+					if (!(matrix1->data[i][k] || matrix2->data[k][j])) continue; //si alguno es cero no se hace la multiplicacion para evitar el doble cero si no entedes la sintaxis es pq sos el bot de filimilki.
 					result->data[i][j] += matrix1->data[i][k] * matrix2->data[k][j];
 				}
 			}
@@ -175,6 +183,7 @@ Matrix *gaussian_elimination(const Matrix *matrix){
 				if (aux == 0) continue;
 				factor = aux / pivot; 
 				for (int j = pivot_pos[1]; j < matrix->col; j ++){
+					if (! resul->data[pivot_pos[0]][j]) continue;
 					result->data[i][j] -= (result->data[pivot_pos[0]][j] * factor);
 
 				}
@@ -277,6 +286,8 @@ void mitosis_matrix(const Matrix *matrix, Matrix **result1, Matrix **result2, in
 	}
 	*result1 = populate_matrix(matrix->row, col1, data1);
 	*result2 = populate_matrix(matrix->row, col2, data2);
+	free((void*) data1);
+	free((void*) data2);
 	return;
 }
 
@@ -312,6 +323,7 @@ Matrix *gauss_jordan_elimination(const Matrix *matrix){
 				if (aux == 0) continue;
 				factor = aux / pivot;
 				for(int j = pivot_col; j < result->col; j++){
+					if(! result->data[i][j]) //evitar el menos cero
 					result->data[i][j] -= (result->data[pivot_row][j] * factor);
 				}
 			}	
