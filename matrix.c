@@ -113,7 +113,7 @@ Matrix *add_matrix(Matrix *matrix1, Matrix *matrix2) {
 
 Matrix *scalar_multiplication(double val, Matrix *matrix1) {
 	if (val == 0){
-		return init_matrix(matrix1->row, matrix2->col); //si es cero directamente devuelvo la nula
+		return init_matrix(matrix1->row, matrix1->col); //si es cero directamente devuelvo la nula
 	}
 	Matrix *matrix2 = init_matrix(matrix1->row, matrix1->col);
 	for (int i = 0; i < matrix1->row; i++) {
@@ -183,7 +183,7 @@ Matrix *gaussian_elimination(const Matrix *matrix){
 				if (aux == 0) continue;
 				factor = aux / pivot; 
 				for (int j = pivot_pos[1]; j < matrix->col; j ++){
-					if (! resul->data[pivot_pos[0]][j]) continue;
+					if (! result->data[pivot_pos[0]][j]) continue;
 					result->data[i][j] -= (result->data[pivot_pos[0]][j] * factor);
 
 				}
@@ -447,3 +447,45 @@ Matrix *fast_inverse(Matrix *matrix){
 
 	return result;
 }
+
+int range(const Matrix *matrix){
+	if (matrix == NULL){
+		printf("ERROR range, wachin me metiste una matriz que no existe\n");
+		return 0;
+	}
+
+	Matrix *triangular = gaussian_elimination(matrix);
+	int i, row_pos = 0, col_pos = 0, range = 0;
+
+	while(row_pos < triangular->row && col_pos < triangular->col){
+		if (triangular->data[row_pos][col_pos]) {
+			row_pos ++; col_pos ++; range ++;
+		}	
+		else{
+			for( i = col_pos; i < triangular->row; i++){
+				if (triangular->data[row_pos][i]) {
+					range ++; col_pos = i +1; row_pos ++;
+					break;
+				}
+			}
+			
+		}
+
+	}
+	free_matrix(triangular);
+	return range;
+}
+/*
+Matrix *lineal_system_beta(const Matrix *matrixi, const Matrix *constant_term){
+	if (matrix == NULL || contant_term == NULL){
+		printf("ERROR lineal_sysytem: fijate lo que mandas\n");
+		return NULL;
+	}
+	if ((matrix->row - constan_term->row) && (constant_term->col -1)) {
+		printf("ERROR lineal_system: fijate las dimensiones wachin\n");
+		return NULL;
+	}
+	
+	
+}
+*/
