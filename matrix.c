@@ -1,4 +1,3 @@
-
 #include "func.h"
 #define PRUEBA printf("LLEGUE a linea %d\n", __LINE__);
 // matrix[row][col]
