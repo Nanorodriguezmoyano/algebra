@@ -1,7 +1,11 @@
-#include "func.h"
+#include "function.h"
 #define PRUEBA printf("LLEGUE a linea %d\n", __LINE__);
 // matrix[row][col]
+//vector[col]  --> no distingue entre vector fila o columna.
 
+//primero van las funciones de solo matrices, despues la de solo vectores, por ultimo las que contiene ambos (ejemplo, sistema de ecuaciones). Mantener el orden!!
+
+//Funciones de solo matrices
 Matrix *init_matrix(int row, int col) {
 	Matrix *matrix;
 	matrix = calloc(1, sizeof(Matrix));
@@ -26,7 +30,7 @@ void print_matrix(const Matrix *matrix) {
 	}
 }
 
-void set_elem(int row, int col, double value, Matrix *matrix) {
+void set_elem_matrix(int row, int col, double value, Matrix *matrix) {
 	matrix->data[row - 1][col - 1] = value;
 	return;
 }
@@ -61,6 +65,7 @@ Matrix *populate_matrix(int row, int col, const double *data) {
 }
 
 //para directamente llenar una desde el teclado.
+/* es una funcion que deben hacer los putos del frontend
 Matrix *populate_matrix_keyboard(int row, int col){
 	Matrix *matrix; 
 	double *data;
@@ -79,7 +84,7 @@ Matrix *populate_matrix_keyboard(int row, int col){
 	return matrix;
 
 }
-
+*/
 void free_matrix(Matrix *matrix) {
 	if (matrix != NULL) {
 		if (matrix->data != NULL) {
@@ -110,7 +115,7 @@ Matrix *add_matrix(Matrix *matrix1, Matrix *matrix2) {
 	}
 }
 
-Matrix *scalar_multiplication(double val, Matrix *matrix1) {
+Matrix *scalar_multiplication_matrix(double val, Matrix *matrix1) {
 	if (val == 0){
 		return init_matrix(matrix1->row, matrix1->col); //si es cero directamente devuelvo la nula
 	}
@@ -124,7 +129,7 @@ Matrix *scalar_multiplication(double val, Matrix *matrix1) {
 	return matrix2;
 }
 
-Matrix *transpose(Matrix *matrix) {
+Matrix *transpose_matrix(Matrix *matrix) {
 	Matrix *transposed;
 	transposed = init_matrix(matrix->col, matrix->row);
 	for (int i = 0; i < matrix->row; i++) {
@@ -158,7 +163,7 @@ Matrix *matrix_multiplication(const Matrix *matrix1, const Matrix *matrix2) {
 
 
 
-Matrix *gaussian_elimination(const Matrix *matrix){
+Matrix *gaussian_elimination_matrix(const Matrix *matrix){
 	/*
 	 *La idea de esta funcion es la siguiente. 
 	 Primero se selecciona un pivot y a partir de ahí tenemos 2 casos:
@@ -196,7 +201,7 @@ Matrix *gaussian_elimination(const Matrix *matrix){
 			for (int i = pivot_pos[0] + 1; i < matrix->row; i ++){
 				aux = result->data[i][pivot_pos[1]];//posible nuevo pivot
 				if(aux != 0){
-					interchange_row(result, pivot_pos[0], i);
+					interchange_row_matrix(result, pivot_pos[0], i);
 					break;	
 				} 
 			}
@@ -206,7 +211,7 @@ Matrix *gaussian_elimination(const Matrix *matrix){
 	return result;
 }
 
-void interchange_row(Matrix *matrix, int row1, int row2) {
+void interchange_row_matrix(Matrix *matrix, int row1, int row2) {
 	double *aux = calloc (matrix->col, sizeof(double));
 	memcpy(aux,  matrix->data[row1], sizeof(double) * matrix->col);
 	for(int i = 0; i < matrix->col; i++){
@@ -220,12 +225,12 @@ void interchange_row(Matrix *matrix, int row1, int row2) {
 //   Matrix *l = init_matrix(matrix->row, matrix->col);
 //   Matrix *u = copy_matrix(matrix);
 // }
-double determinant(const Matrix *matrix) {
+double determinant_matrix(const Matrix *matrix) {
 	if (matrix->row - matrix->col) {
-		printf("ERROR determinant: Estas queriedo hacer un determinante de una cuadrada wachin\n"); //Ayuda para debuggear nomas
+		printf("ERROR determinant: Estas queriedo hacer un determinante de una no cuadrada wachin\n"); //Ayuda para debuggear nomas
 		return 0;
 	}
-	Matrix * triangular = gaussian_elimination(matrix);
+	Matrix * triangular = gaussian_elimination_matrix(matrix);
 	double result = 1, value;
 
 	for (int i = 0; i < matrix->row; i++){
@@ -304,13 +309,13 @@ Matrix *identity_matrix(int dim){
 	return matrix;
 }
 
-Matrix *gauss_jordan_elimination(const Matrix *matrix){
+Matrix *gauss_jordan_elimination_matrix(const Matrix *matrix){
 	Matrix  *result;
 	int dim, pivot_col, pivot_row;
 	double pivot, factor, aux;
 	if (matrix->row > matrix->col) dim = matrix->col;
 	else dim = matrix->row;
-	result = gaussian_elimination(matrix);
+	result = gaussian_elimination_matrix(matrix);
 	
 	pivot_col = dim - 1; pivot_row = dim - 1;
 
@@ -339,8 +344,8 @@ Matrix *gauss_jordan_elimination(const Matrix *matrix){
 	
 }
 
-Matrix *inverse(const Matrix *matrix){
-	if (!determinant(matrix)){
+Matrix *inverse_matrix(const Matrix *matrix){
+	if (!determinant_matrix(matrix)){
 		printf("ERROR Inverse: matriz no tiene inversa\n");
 		return NULL;
 	}
@@ -355,7 +360,7 @@ Matrix *inverse(const Matrix *matrix){
 	
 	identity = identity_matrix(dim);
 	concatenate = concatenate_matrix(matrix, identity);
-	concatenate_aux = gauss_jordan_elimination(concatenate);
+	concatenate_aux = gauss_jordan_elimination_matrix(concatenate);
 	mitosis_matrix(concatenate_aux, &aux, &inverse, dim);
 
 	for (int i = 0; i< dim; i++){
@@ -371,7 +376,7 @@ Matrix *inverse(const Matrix *matrix){
 	return inverse;
 }
 
-double cofactor(int row, int col, Matrix *matrix){
+double cofactor_matrix_elem(int row, int col, Matrix *matrix){
   double *data = calloc((matrix->row -1)*(matrix->row -1), sizeof(double));
   double cofactor;
   int k = 0;
@@ -384,7 +389,7 @@ double cofactor(int row, int col, Matrix *matrix){
     }
   }
 
-  cofactor = determinant(populate_matrix((matrix->row)-1, (matrix->col)-1, data));
+  cofactor = determinant_matrix(populate_matrix((matrix->row)-1, (matrix->col)-1, data));
   if (cofactor != 0 && (row + col + 2) % 2 != 0){
    cofactor = cofactor * (-1); 
   }
@@ -406,7 +411,7 @@ Matrix *cofactor_matrix(Matrix *matrix){
 
 	for (int i = 0; i < dim; i ++){
 		for (int j = 0; j < dim; j++){
-			result->data[i][j] = cofactor(i, j, matrix);
+			result->data[i][j] = cofactor_matrix_elem(i, j, matrix);
 		}
 	}
 	return result;
@@ -422,14 +427,14 @@ Matrix *adjoint_matrix(Matrix *matrix){
 	}
 	
 	Matrix *result, *cofactor = cofactor_matrix(matrix);
-	result = transpose(cofactor);
+	result = transpose_matrix(cofactor);
 	free_matrix(cofactor);
 	return result;
 
 }
 
-Matrix *fast_inverse(Matrix *matrix){
-	if (!determinant(matrix)){
+Matrix *fast_inverse_matrix(Matrix *matrix){
+	if (!determinant_matrix(matrix)){
 		printf("ERROR Inverse: matriz no tiene inversa\n");
 		return NULL;
 	}
@@ -441,19 +446,19 @@ Matrix *fast_inverse(Matrix *matrix){
 	Matrix *result, *adjoint;
 
 	adjoint = adjoint_matrix(matrix);
-	result = scalar_multiplication(1 / determinant(matrix), adjoint);
+	result = scalar_multiplication_matrix(1 / determinant_matrix(matrix), adjoint);
 	free_matrix(adjoint);
 
 	return result;
 }
 
-int range(const Matrix *matrix){
+int range_matrix(const Matrix *matrix){
 	if (matrix == NULL){
 		printf("ERROR range, wachin me metiste una matriz que no existe\n");
 		return 0;
 	}
 
-	Matrix *triangular = gaussian_elimination(matrix);
+	Matrix *triangular = gaussian_elimination_matrix(matrix);
 	int i, row_pos = 0, col_pos = 0, range = 0;
 
 	while(row_pos < triangular->row && col_pos < triangular->col){
@@ -474,17 +479,155 @@ int range(const Matrix *matrix){
 	free_matrix(triangular);
 	return range;
 }
-/*
-Matrix *lineal_system_beta(const Matrix *matrixi, const Matrix *constant_term){
-	if (matrix == NULL || contant_term == NULL){
-		printf("ERROR lineal_sysytem: fijate lo que mandas\n");
-		return NULL;
-	}
-	if ((matrix->row - constan_term->row) && (constant_term->col -1)) {
-		printf("ERROR lineal_system: fijate las dimensiones wachin\n");
+
+
+//Funciones de vectores
+Vector *init_vector(int dim){
+	if (dim <= 0){
+		printf("ERROR: init_vector no existe dimension menor a 1\n");
 		return NULL;
 	}
 	
-	
+	Vector *vector;
+	vector = calloc(1, sizeof(Vector));
+	vector->dim = dim;
+	vector->data = calloc(dim, sizeof(double));
+	return vector;	
 }
-*/
+
+Vector *copy_vector(const Vector *vector1){
+	if(vector1 == NULL){
+		printf("ERROR: copy_vector recibe NULL\n");
+		return NULL;
+	}	
+	Vector *vector;
+	vector = init_vector(vector1->dim);
+	for(int i = 0; i < vector->dim; i++) vector->data[i] = vector1->data[i];
+	
+	return vector;
+}
+
+void print_vector(const Vector *vector){
+	if(vector == NULL){
+		printf("ERROR: print_vector recibe NULL\n");	
+		return;
+	}
+	for (int i = 0; i < vector->dim; i++) printf("%lf\n", vector->data[i]); 
+}
+
+void set_elem_vector(int elem, double value,  Vector *vector){
+	if (vector == NULL){
+		printf("ERROR: set_elem, ingresa vector NULL\n");
+		return;
+	}
+	if(elem > vector->dim){
+		printf("ERRIR: set_elem_vector, dimension no valida\n");
+	return;
+	}
+	vector->data[elem - 1] = value;
+}
+
+double scalar_product_vector(const Vector *vector1, const Vector *vector2){
+	if (vector1 == NULL || vector2 == NULL){
+		printf("ERRO: scalar_product, ingresa vectores NULL\n");
+		return 0;
+	}	
+	int dim = vector1->dim;
+	if (vector1->dim - vector2->dim){
+		printf("ERROR: sclar_product, dimension incorrecta\n");
+		return 0;
+	}	
+	
+	double scalar_product = 0.0;
+
+	for(int i = 0; i < dim; i++) if(vector1->data[i] && vector2->data[i]) scalar_product += (vector1->data[i] * vector2->data[i]);  //el if es para evitar el -0
+	return scalar_product;
+}
+
+Vector *vector_addition(const Vector *vector1, const Vector *vector2){
+	if (vector1 == NULL || vector2 == NULL){
+		printf("ERRO: vector_addition, ingresa vectores NULL\n");
+		return NULL;
+	}	
+	int dim = vector1->dim;
+	if (vector1->dim != vector2->dim){
+		printf("ERROR: vector_addition, dimension incorrecta\n");
+		return NULL;
+	}	
+	Vector *result = init_vector(dim);
+	
+	for(int i = 0; i < dim; i++){ 
+		if(vector1->data[i] && vector2->data[i]) result->data[i] = (vector1->data[i] + vector2->data[i]);  //el if es para evitar el -0}
+	}
+	return result;
+}
+
+//Si data es mas grande que dim, se desechan los valores restante, si es mas chico se completa el vector con cero. Comportamiento similar a popoulate_matrix
+Vector *populate_vector(int dim, const double *data){
+	if (dim <= 0){
+		printf("ERROR: populate vector, dimension invalida\n");
+		return NULL;
+	}
+	if(data == NULL){
+		printf("ERROR: populate_vector, data NULL\n");
+		return NULL;
+	}
+		
+	Vector *vector = init_vector(dim);
+	for(int i = 0; i < dim; i ++){
+		vector->data[i] = data[i];
+	}
+
+	return vector;
+}
+
+Vector *cross_product_3_dim_vector(const Vector *vector1, const Vector *vector2){
+	if(vector1 == NULL || vector2 == NULL){
+		printf("ERROR: cross_product recibe NULL\n");
+		return NULL;
+	}
+	if(vector1->dim != 3 && vector2->dim != 3){
+		printf("ERROR: cross_product solo para dimension tres\n");
+		return NULL;
+	}
+	
+	double data[3];
+
+	data[0] = vector1->data[1]*vector2->data[2] - vector1->data[2]*vector2->data[1];
+	data[1] = vector1->data[2]*vector2->data[0] - vector1->data[0]*vector2->data[2];
+	data[2] = vector1->data[0]*vector2->data[1] - vector1->data[1]*vector2->data[2];
+
+	for(int i = 0; i ++; i < 3){
+		if(data[i] == (-0)) data[i] = 0; //evitar el -0
+	}
+	return populate_vector(3, data);
+}
+
+
+//funciones de matrices y vectores
+
+
+//asume que la multiplicacion es con el vector a la izquierda. El vector se escribe como columna. Si no te sirve matate (o usa matrix_multiplication).
+Vector *matrix_vector_multiplication(const Matrix *matrix, const Vector* vector){
+	if(matrix == NULL || vector == NULL){
+		printf("ERROR: matrix_vector_multiplication, ingresa NULL\n");
+		return NULL;
+	}
+	if(matrix->col - vector->dim){
+		printf("ERROR: matrix_vector_multiplication, error de dimension\n");
+		return NULL;
+	}	
+	
+	Vector *result = init_vector(matrix->row);
+	for (int i = 0; i < result->dim; i ++){
+		for (int j = 0; j < vector->dim; j++){
+			if(matrix->data[i][j] && vector->data[j]) {//evitar el -0
+				result->data[i] += (matrix->data[i][j] * vector->data[j]);
+				
+			}
+		}
+	}
+	return result;
+}
+
+

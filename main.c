@@ -1,39 +1,16 @@
-#include "func.h"
+#include "function.h"
+#define ESPACIO printf("\n\n");
 
 
 int main(int argc, char **arcgv){
-	int con = 1;
-	do{
-		double data[900];
-		for (int i = 0; i < 900; i++){
-			data[i] = 2*(i) % 7 + i + 31 * i % 11+ 47.5464845456 * i / 23;
-		}
+	Matrix *matrix1;
+	Vector *vector1, *vector2, *vector3;	
+	double dot_product, data1[] = {1,0,0}, data2[] = {0,1,0};
 
-		Matrix *matrix, *cofactor, *aux;
-		matrix = populate_matrix(30, 30, data);
-		cofactor = fast_inverse(matrix);
-		aux = matrix_multiplication(matrix, cofactor);
-		print_matrix(cofactor);
-		printf("\n");
-		print_matrix(aux);
+	vector1 = populate_vector(3, data1);
+	vector2 = populate_vector(3, data2);
+	vector3 = cross_product_3_dim_vector(vector1, vector2);
 
-
-
-
-
-		
-
-
-
-
-
-
-		
-		
-		printf("\nDesea continuar: ");
-		scanf("%d", &con);
-	}while (con == 1);
-	
+	print_vector(vector3);
 	return 0;
-	
 }
